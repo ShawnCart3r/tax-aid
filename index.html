@@ -1,0 +1,829 @@
+<!-- ============================================================
+     Tax-Aid Site Manager Corner — WordPress Custom HTML Block
+     Drop this entire block into a Custom HTML block on the page.
+     All CSS is scoped to #smc-app. All JS is wrapped in an IIFE.
+     Nothing here will touch any existing WordPress theme code.
+     ============================================================
+
+     ✏️  HOW TO EDIT THIS PAGE
+     ─────────────────────────
+     SAFE TO EDIT:
+       • href="PASTE-LINK-HERE"  →  Replace with the real URL
+       • Button/card label text  →  Change the visible name
+       • data-search="..."       →  Add keywords so search finds it
+
+     DO NOT TOUCH:
+       • Anything inside <style>...</style>
+       • Anything inside <script>...</script>
+       • Class names (smc-btn, smc-card, etc.)
+       • The id="smc-app" wrapper div
+
+     Need to add a new card? Copy an existing smc-card block,
+     paste it inside the correct section's smc-cards-grid, and
+     update the title, description, icon, and href.
+     ============================================================ -->
+
+<style>
+/* All rules scoped to #smc-app — cannot bleed into WP theme */
+#smc-app *,
+#smc-app *::before,
+#smc-app *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+#smc-app {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    border-radius: 16px;
+    min-height: 100vh;
+    width: 100%;
+}
+
+#smc-app .smc-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Header */
+#smc-app .smc-header {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+#smc-app .smc-header-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+#smc-app .smc-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: white;
+    border: 2px solid #e1e8ed;
+}
+
+#smc-app .smc-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+#smc-app .smc-title {
+    color: #2c3e50;
+    font-size: 2.5rem;
+    margin: 0;
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+#smc-app .smc-welcome {
+    color: #5a6c7d;
+    font-size: 1.1rem;
+    margin-top: 8px;
+}
+
+#smc-app .smc-anchor-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #667eea;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+#smc-app .smc-anchor-link:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
+/* Search */
+#smc-app .smc-search-bar {
+    margin-top: 20px;
+    position: relative;
+}
+
+#smc-app .smc-search-bar input {
+    width: 100%;
+    padding: 15px 50px 15px 20px;
+    border: 2px solid #e1e8ed;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s;
+    color: #2c3e50;
+    background: white;
+    outline: none;
+}
+
+#smc-app .smc-search-bar input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+#smc-app .smc-search-icon {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 18px;
+}
+
+#smc-app .smc-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid #667eea;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    z-index: 99999;
+    max-height: 360px;
+    overflow-y: auto;
+    display: none;
+}
+
+#smc-app .smc-dropdown.visible {
+    display: block;
+}
+
+#smc-app .smc-result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.15s;
+}
+
+#smc-app .smc-result-item:last-child {
+    border-bottom: none;
+}
+
+#smc-app .smc-result-item:hover,
+#smc-app .smc-result-item.active {
+    background: #f0f3ff;
+}
+
+#smc-app .smc-result-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+#smc-app .smc-result-text strong {
+    display: block;
+    color: #2c3e50;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+#smc-app .smc-result-text span {
+    color: #5a6c7d;
+    font-size: 0.8rem;
+}
+
+#smc-app .smc-no-results {
+    padding: 18px;
+    text-align: center;
+    color: #5a6c7d;
+    font-size: 0.95rem;
+}
+
+/* Quick Access */
+#smc-app .smc-quick-links {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+#smc-app .smc-quick-links h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+#smc-app .smc-quick-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+#smc-app .smc-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white !important;
+    padding: 14px 10px;
+    border-radius: 10px;
+    text-align: center;
+    text-decoration: none !important;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: block;
+    line-height: 1.3;
+}
+
+#smc-app .smc-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    color: white !important;
+    text-decoration: none !important;
+}
+
+/* Sections */
+#smc-app .smc-section {
+    margin-bottom: 40px;
+}
+
+#smc-app .smc-section-header {
+    color: white;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+}
+
+#smc-app .smc-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Cards */
+#smc-app .smc-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, outline 0.15s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+#smc-app .smc-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+#smc-app .smc-card.smc-highlight {
+    outline: 3px solid #667eea;
+    box-shadow: 0 0 0 6px rgba(102,126,234,0.15), 0 10px 30px rgba(0,0,0,0.15);
+}
+
+#smc-app .smc-btn.smc-highlight {
+    outline: 3px solid #fff;
+    box-shadow: 0 0 0 5px rgba(255,255,255,0.6), 0 5px 15px rgba(102,126,234,0.4);
+}
+
+#smc-app .smc-card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+#smc-app .smc-card-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #ffd700;
+    color: #2c3e50;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+#smc-app .smc-card-title {
+    font-size: 1.2rem;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+#smc-app .smc-card-desc {
+    color: #5a6c7d;
+    line-height: 1.5;
+    font-size: 0.92rem;
+}
+
+/* Card icon colors */
+#smc-app .ci-blue   { background: linear-gradient(135deg, #667eea, #764ba2); }
+#smc-app .ci-green  { background: linear-gradient(135deg, #11998e, #38ef7d); }
+#smc-app .ci-orange { background: linear-gradient(135deg, #f093fb, #f5576c); }
+#smc-app .ci-purple { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+#smc-app .ci-red    { background: linear-gradient(135deg, #fa709a, #fee140); }
+#smc-app .ci-teal   { background: linear-gradient(135deg, #30cfd0, #330867); }
+#smc-app .ci-amber  { background: linear-gradient(135deg, #f7971e, #ffd200); }
+#smc-app .ci-rose   { background: linear-gradient(135deg, #ee0979, #ff6a00); }
+#smc-app .ci-slate  { background: linear-gradient(135deg, #434343, #000000); }
+
+/* Questionnaire group */
+#smc-app .smc-q-group {
+    background: #f8f9ff;
+    border: 2px solid #e8ecff;
+    border-radius: 12px;
+    padding: 20px;
+    grid-column: 1 / -1;
+}
+
+#smc-app .smc-q-group h4 {
+    color: #2c3e50;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+#smc-app .smc-q-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#smc-app .smc-q-link {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white !important;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none !important;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#smc-app .smc-q-link:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    color: white !important;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    #smc-app .smc-title        { font-size: 1.8rem; }
+    #smc-app .smc-header-content { flex-direction: column; text-align: center; }
+    #smc-app .smc-cards-grid   { grid-template-columns: 1fr; }
+    #smc-app .smc-quick-grid   { grid-template-columns: 1fr 1fr; }
+    #smc-app .smc-section-header { font-size: 1.4rem; }
+}
+</style>
+
+<div id="smc-app">
+  <div class="smc-container">
+
+    <!-- Header -->
+    <div class="smc-header">
+      <div class="smc-header-content">
+        <a href="https://tax-aid.org" class="smc-logo" title="Back to Tax-Aid Home"><img src="https://tax-aid.org/wp-content/uploads/2018/10/tax-aid-logo-1.jpg" alt="Tax-Aid Home"></a>
+        <div>
+          <h1 class="smc-title">Site Manager Corner</h1>
+          <p class="smc-welcome">Welcome back! Everything you need to manage your volunteer tax site.</p>
+        </div>
+      </div>
+      <div class="smc-search-bar">
+        <input id="smcSearchInput" type="text" placeholder="Search documents, sections, forms… (e.g. Getting Started, ICE Protocol)" autocomplete="off">
+        <span class="smc-search-icon">🔍</span>
+        <div class="smc-dropdown" id="smcDropdown"></div>
+      </div>
+    </div>
+
+    <!-- Quick Access -->
+    <div class="smc-quick-links">
+      <h3>⚡ Quick Access</h3>
+      <!-- ✏️ EDIT ZONE: Quick Access Buttons — update href and label text only -->
+      <div class="smc-quick-grid">
+        <a href="PASTE-LINK-HERE" class="smc-btn" data-search="Tax-Aid 2026 Sites flyer all sites schedule">📅 Tax-Aid 2026 Sites</a>
+        <a href="PASTE-LINK-HERE" class="smc-btn" data-search="Site Manager Contact List 2026 emergency contacts phone">📞 Site Manager Contact List 2026</a>
+        <a href="PASTE-LINK-HERE" class="smc-btn" data-search="Report Hours hours tracking">📊 Report Hours</a>
+        <a href="PASTE-LINK-HERE" class="smc-btn" data-search="Message Board community announcements">💬 Message Board</a>
+        <a href="PASTE-LINK-HERE" class="smc-btn" data-search="Volunteer Training LinkTree training links">🔗 Volunteer Training LinkTree</a>
+        <a href="PASTE-LINK-HERE" class="smc-btn" data-search="Site Manager Guidelines 2026 handbook rules">📋 Site Manager Guidelines 2026</a>
+        <a href="PASTE-LINK-HERE" class="smc-btn" data-search="Tax Questionnaire English 2026 client form">📝 Tax Questionnaire (English 2026)</a>
+        <a href="PASTE-LINK-HERE" class="smc-btn" data-search="Tax Questionnaire Spanish 2026 client form">📝 Tax Questionnaire (Spanish 2026)</a>
+        <a href="PASTE-LINK-HERE" class="smc-btn" data-search="Tax Questionnaire Chinese 2026 client form">📝 Tax Questionnaire (Chinese 2026)</a>
+        <a href="PASTE-LINK-HERE" class="smc-btn" data-search="Document Checklist What to Bring trilingual client">📄 Document Checklist – What to Bring</a>
+        <a href="PASTE-LINK-HERE" class="smc-btn" data-search="Expense Form General fillable trilingual reimbursement">💸 Expense Form (General)</a>
+        <a href="PASTE-LINK-HERE" class="smc-btn" data-search="Expense Form Uber Lyft rideshare reimbursement">🚗 Expense Form (Uber/Lyft)</a>
+      <!-- END EDIT ZONE: Quick Access Buttons -->
+      </div>
+    </div>
+
+    <!-- Getting Started -->
+    <div class="smc-section" id="smc-getting-started">
+      <h2 class="smc-section-header">🚀 Getting Started</h2>
+            <!-- ✏️ EDIT ZONE: Getting Started — update href and label text only -->
+      <div class="smc-cards-grid">
+        <div class="smc-card" data-search="Site Manager Handbook guide setup operations troubleshooting">
+          <div class="smc-card-badge">NEW</div>
+          <div class="smc-card-icon ci-blue">📋</div>
+          <h3 class="smc-card-title">Site Manager Handbook</h3>
+          <p class="smc-card-desc">Complete guide to managing your volunteer tax site, including setup, daily operations, and troubleshooting.</p>
+        </div>
+        <div class="smc-card" data-search="Training Videos video tutorials volunteer onboarding tax software">
+          <div class="smc-card-icon ci-green">🎓</div>
+          <h3 class="smc-card-title">Training Videos</h3>
+          <p class="smc-card-desc">Step-by-step video tutorials covering everything from volunteer onboarding to tax software basics.</p>
+        </div>
+        <div class="smc-card" data-search="Opening Day Checklist opening site ready volunteers clients">
+          <div class="smc-card-icon ci-orange">✅</div>
+          <h3 class="smc-card-title">Opening Day Checklist</h3>
+          <p class="smc-card-desc">Essential checklist to ensure your site is ready for volunteers and clients on opening day.</p>
+        </div>
+        <div class="smc-q-group">
+          <h4>📝 Tax Questionnaires &amp; Client Forms</h4>
+          <div class="smc-q-links">
+            <a href="PASTE-LINK-HERE" class="smc-q-link" data-search="Tax Questionnaire English 2026 client form">🇺🇸 English 2026</a>
+            <a href="PASTE-LINK-HERE" class="smc-q-link" data-search="Tax Questionnaire Spanish 2026 client form">🇪🇸 Spanish 2026</a>
+            <a href="PASTE-LINK-HERE" class="smc-q-link" data-search="Tax Questionnaire Chinese 2026 client form">🇨🇳 Chinese 2026</a>
+            <a href="PASTE-LINK-HERE" class="smc-q-link" data-search="Document Checklist What to Bring trilingual client">📋 What to Bring (Trilingual)</a>
+            <a href="PASTE-LINK-HERE" class="smc-q-link" data-search="Expense Form General fillable trilingual reimbursement">💸 Expense Form (General – Trilingual)</a>
+            <a href="PASTE-LINK-HERE" class="smc-q-link" data-search="Expense Form Uber Lyft rideshare reimbursement">🚗 Expense Form (Uber/Lyft)</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Forms & Documents -->
+    <div class="smc-section" id="smc-forms-documents">
+      <h2 class="smc-section-header">📄 Forms &amp; Documents</h2>
+            <!-- ✏️ EDIT ZONE: Forms & Documents — update href and label text only -->
+      <div class="smc-cards-grid">
+        <div class="smc-card" data-search="Volunteer Registration Forms background check confidentiality agreement">
+          <div class="smc-card-icon ci-purple">📝</div>
+          <h3 class="smc-card-title">Volunteer Registration Forms</h3>
+          <p class="smc-card-desc">All forms needed for volunteer registration, background checks, and confidentiality agreements.</p>
+        </div>
+        <div class="smc-card" data-search="Weekly Reporting Templates hours tracking client numbers site activity">
+          <div class="smc-card-icon ci-red">📊</div>
+          <h3 class="smc-card-title">Weekly Reporting Templates</h3>
+          <p class="smc-card-desc">Templates for tracking volunteer hours, client numbers, and site activity reports.</p>
+        </div>
+        <div class="smc-card" data-search="Security Privacy Guidelines HIPAA compliance data protection">
+          <div class="smc-card-icon ci-teal">🔒</div>
+          <h3 class="smc-card-title">Security &amp; Privacy Guidelines</h3>
+          <p class="smc-card-desc">HIPAA compliance, data security protocols, and client privacy protection guidelines.</p>
+        </div>
+        <div class="smc-card" data-search="Communication Templates email volunteer client notifications emergency">
+          <div class="smc-card-icon ci-blue">📮</div>
+          <h3 class="smc-card-title">Communication Templates</h3>
+          <p class="smc-card-desc">Email templates for volunteer communications, client notifications, and emergency announcements.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Volunteer Management -->
+    <div class="smc-section" id="smc-volunteer-management">
+      <h2 class="smc-section-header">👥 Volunteer Management</h2>
+            <!-- ✏️ EDIT ZONE: Volunteer Management — update href and label text only -->
+      <div class="smc-cards-grid">
+        <div class="smc-card" data-search="Volunteer Scheduling Guide schedule availability last-minute changes">
+          <div class="smc-card-icon ci-green">🎯</div>
+          <h3 class="smc-card-title">Volunteer Scheduling Guide</h3>
+          <p class="smc-card-desc">Best practices for creating schedules, managing availability, and handling last-minute changes.</p>
+        </div>
+        <div class="smc-card" data-search="Recognition Appreciation Ideas thank volunteers morale team">
+          <div class="smc-card-icon ci-orange">⭐</div>
+          <h3 class="smc-card-title">Recognition &amp; Appreciation Ideas</h3>
+          <p class="smc-card-desc">Creative ways to thank and recognize your volunteer team throughout the tax season.</p>
+        </div>
+        <div class="smc-card" data-search="Conflict Resolution Resources volunteer conflicts difficult situations morale">
+          <div class="smc-card-icon ci-purple">🛠️</div>
+          <h3 class="smc-card-title">Conflict Resolution Resources</h3>
+          <p class="smc-card-desc">Strategies for handling volunteer conflicts, difficult situations, and maintaining team morale.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Site Manager Information -->
+    <div class="smc-section" id="smc-site-manager-info">
+      <h2 class="smc-section-header">🗂️ Site Manager Information</h2>
+            <!-- ✏️ EDIT ZONE: Site Manager Information — update href and label text only -->
+      <div class="smc-cards-grid">
+        <div class="smc-card" data-search="Client Decides Not to File protocol refusal no file">
+          <div class="smc-card-icon ci-blue">🚫</div>
+          <h3 class="smc-card-title">Client Decides Not to File</h3>
+          <p class="smc-card-desc">Guidance and protocol for situations where a client chooses not to file their taxes.</p>
+        </div>
+        <div class="smc-card" data-search="Site Manager Meeting Notes 1/23/25 January 2025 notes">
+          <div class="smc-card-icon ci-green">📝</div>
+          <h3 class="smc-card-title">Site Manager Meeting Notes</h3>
+          <p class="smc-card-desc">Meeting notes from the Site Manager meeting on 1/23/25.</p>
+        </div>
+        <div class="smc-card" data-search="Site Manager Instructions iPad MacBook Volunteer Check-in Client Tracer WiFi">
+          <div class="smc-card-icon ci-purple">💻</div>
+          <h3 class="smc-card-title">Site Manager Instructions</h3>
+          <p class="smc-card-desc">iPad and MacBook instructions for Volunteer Check-in and Client Tracer. Includes WiFi credentials for host sites.</p>
+        </div>
+        <div class="smc-card" data-search="Technical Instructions Troubleshooting Guide Tax-Aid Equipment tech support">
+          <div class="smc-card-icon ci-teal">🔧</div>
+          <h3 class="smc-card-title">Technical Instructions</h3>
+          <p class="smc-card-desc">Troubleshooting guide for Tax-Aid equipment.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tax Law Publications -->
+    <div class="smc-section" id="smc-tax-law">
+      <h2 class="smc-section-header">📚 Tax Law Publications</h2>
+            <!-- ✏️ EDIT ZONE: Tax Law Publications — update href and label text only -->
+      <div class="smc-cards-grid">
+        <div class="smc-card" data-search="Individual Tax Guide Pub 17 publication taxes individual">
+          <div class="smc-card-icon ci-blue">📖</div>
+          <h3 class="smc-card-title">Individual Tax Guide</h3>
+          <p class="smc-card-desc">Pub 17 – Comprehensive individual tax guide.</p>
+        </div>
+        <div class="smc-card" data-search="Education Pub 970 publication tax benefits education tuition">
+          <div class="smc-card-icon ci-green">🎓</div>
+          <h3 class="smc-card-title">Education</h3>
+          <p class="smc-card-desc">Pub 970 – Tax benefits for education.</p>
+        </div>
+        <div class="smc-card" data-search="Pension Annuity Pub 575 publication retirement income">
+          <div class="smc-card-icon ci-orange">🏦</div>
+          <h3 class="smc-card-title">Pension and Annuity</h3>
+          <p class="smc-card-desc">Pub 575 – Tax treatment of pension and annuity income.</p>
+        </div>
+        <div class="smc-card" data-search="Head of Household HOH Pub 1540 publication filing status">
+          <div class="smc-card-icon ci-purple">🏠</div>
+          <h3 class="smc-card-title">Head of Household (HOH)</h3>
+          <p class="smc-card-desc">Pub 1540 – Filing status guide for Head of Household.</p>
+        </div>
+        <div class="smc-card" data-search="Earned Income Credit EIC Pub 596 publication eligibility">
+          <div class="smc-card-icon ci-red">💰</div>
+          <h3 class="smc-card-title">Earned Income Credit (EIC)</h3>
+          <p class="smc-card-desc">Pub 596 – Earned Income Credit eligibility and calculation.</p>
+        </div>
+        <div class="smc-card" data-search="W-7 ITIN Application Individual Taxpayer Identification Number">
+          <div class="smc-card-icon ci-teal">🪪</div>
+          <h3 class="smc-card-title">W-7 – ITIN Application</h3>
+          <p class="smc-card-desc">Individual Taxpayer Identification Number (ITIN) application instructions.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Supplementary Volunteer Training Materials -->
+    <div class="smc-section" id="smc-training-materials">
+      <h2 class="smc-section-header">🧑‍🏫 Supplementary Volunteer Training Materials</h2>
+            <!-- ✏️ EDIT ZONE: Supplementary Volunteer Training Materials — update href and label text only -->
+      <div class="smc-cards-grid">
+        <div class="smc-card" data-search="1098-T tuition statement slide deck training">
+          <div class="smc-card-icon ci-blue">🎓</div>
+          <h3 class="smc-card-title">1098-T</h3>
+          <p class="smc-card-desc">Slide deck covering tuition statement reporting (Form 1098-T).</p>
+        </div>
+        <div class="smc-card" data-search="Railroad SSR Social Security Replacement slide deck training">
+          <div class="smc-card-icon ci-green">🚂</div>
+          <h3 class="smc-card-title">Railroad SSR</h3>
+          <p class="smc-card-desc">Slide deck on Railroad Social Security Replacement benefits.</p>
+        </div>
+        <div class="smc-card" data-search="Site Etiquette training video conduct volunteer behavior">
+          <div class="smc-card-icon ci-orange">🎬</div>
+          <h3 class="smc-card-title">Site Etiquette</h3>
+          <p class="smc-card-desc">Training video covering proper conduct and etiquette at volunteer tax sites.</p>
+        </div>
+        <div class="smc-card" data-search="Amended Return instruction document filing correction 1040-X">
+          <div class="smc-card-icon ci-purple">✏️</div>
+          <h3 class="smc-card-title">Amended Return</h3>
+          <p class="smc-card-desc">Instruction document for preparing and filing amended tax returns.</p>
+        </div>
+        <div class="smc-card" data-search="Tracker Intro training video client tracker system">
+          <div class="smc-card-icon ci-red">🎬</div>
+          <h3 class="smc-card-title">Tracker Intro</h3>
+          <p class="smc-card-desc">Training video introducing the Client Tracker system used at Tax-Aid sites.</p>
+        </div>
+        <div class="smc-card" data-search="Foster Youth instruction document tax considerations youth">
+          <div class="smc-card-icon ci-teal">👨‍👩‍👧</div>
+          <h3 class="smc-card-title">Foster Youth</h3>
+          <p class="smc-card-desc">Instruction document for serving foster youth clients and related tax considerations.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Protecting Our Clients -->
+    <div class="smc-section" id="smc-protecting-clients">
+      <h2 class="smc-section-header">🛡️ Protecting Our Clients</h2>
+            <!-- ✏️ EDIT ZONE: Protecting Our Clients — update href and label text only -->
+      <div class="smc-cards-grid">
+        <div class="smc-card" data-search="Immigration Rights ICE Protocol slide deck immigration">
+          <div class="smc-card-icon ci-slate">⚖️</div>
+          <h3 class="smc-card-title">Immigration Rights and ICE Protocol</h3>
+          <p class="smc-card-desc">Slide deck outlining client immigration rights and site protocols related to ICE.</p>
+        </div>
+        <div class="smc-card" data-search="We Have Rights videos ICE situations client education library">
+          <div class="smc-card-icon ci-rose">✊</div>
+          <h3 class="smc-card-title">We Have Rights</h3>
+          <p class="smc-card-desc">Library of videos on how to handle ICE situations. Client education resource.</p>
+        </div>
+        <div class="smc-card" data-search="Preparing ICE Interaction Guidelines site managers visit raid">
+          <div class="smc-card-icon ci-amber">🚨</div>
+          <h3 class="smc-card-title">Preparing for ICE Interaction</h3>
+          <p class="smc-card-desc">Guidelines for site managers in case there is an ICE visit at the tax site.</p>
+        </div>
+        <div class="smc-card" data-search="Employers Guide to ICE slide deck employer rights responsibilities">
+          <div class="smc-card-icon ci-blue">💼</div>
+          <h3 class="smc-card-title">Employer's Guide to ICE</h3>
+          <p class="smc-card-desc">Slide deck covering employer rights and responsibilities in ICE situations.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resources & Support -->
+    <div class="smc-section" id="smc-resources-support">
+      <h2 class="smc-section-header">💡 Resources &amp; Support</h2>
+            <!-- ✏️ EDIT ZONE: Resources & Support — update href and label text only -->
+      <div class="smc-cards-grid">
+        <div class="smc-card" data-search="FAQ Troubleshooting frequently asked questions common issues">
+          <div class="smc-card-icon ci-red">❓</div>
+          <h3 class="smc-card-title">FAQ &amp; Troubleshooting</h3>
+          <p class="smc-card-desc">Answers to common questions and solutions to frequently encountered issues.</p>
+        </div>
+        <div class="smc-card" data-search="Contact Directory phone emails Tax-Aid staff technical support site managers">
+          <div class="smc-card-icon ci-teal">📞</div>
+          <h3 class="smc-card-title">Contact Directory</h3>
+          <p class="smc-card-desc">Phone numbers and emails for Tax-Aid staff, technical support, and other site managers.</p>
+        </div>
+        <div class="smc-card" data-search="Site Manager Community Forum connect share tips questions">
+          <div class="smc-card-icon ci-blue">💬</div>
+          <h3 class="smc-card-title">Site Manager Community Forum</h3>
+          <p class="smc-card-desc">Connect with other site managers to share tips, ask questions, and build community.</p>
+        </div>
+        <div class="smc-card" data-search="News Updates announcements policy changes Tax-Aid headquarters">
+          <div class="smc-card-badge">UPDATED</div>
+          <div class="smc-card-icon ci-green">📰</div>
+          <h3 class="smc-card-title">News &amp; Updates</h3>
+          <p class="smc-card-desc">Latest announcements, policy changes, and important updates from Tax-Aid headquarters.</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.smc-container -->
+</div><!-- /#smc-app -->
+
+<script>
+(function () {
+  'use strict';
+
+  var root     = document.getElementById('smc-app');
+  var input    = document.getElementById('smcSearchInput');
+  var dropdown = document.getElementById('smcDropdown');
+  if (!root || !input || !dropdown) return; // bail if not on this page
+
+  var sections = [
+    { id: 'smc-getting-started',      label: 'Getting Started',                          icon: '🚀', kw: 'getting started new opening checklist training handbook' },
+    { id: 'smc-forms-documents',      label: 'Forms & Documents',                        icon: '📄', kw: 'forms documents registration reporting security communication' },
+    { id: 'smc-volunteer-management', label: 'Volunteer Management',                     icon: '👥', kw: 'volunteer management scheduling recognition conflict' },
+    { id: 'smc-site-manager-info',    label: 'Site Manager Information',                 icon: '🗂️', kw: 'site manager information instructions meeting notes technical troubleshooting ipad wifi' },
+    { id: 'smc-tax-law',              label: 'Tax Law Publications',                     icon: '📚', kw: 'tax law publications pub 17 970 575 1540 596 w7 itin' },
+    { id: 'smc-training-materials',   label: 'Supplementary Volunteer Training Materials', icon: '🧑‍🏫', kw: 'supplementary volunteer training 1098 railroad amended tracker foster youth' },
+    { id: 'smc-protecting-clients',   label: 'Protecting Our Clients',                   icon: '🛡️', kw: 'protecting clients immigration ice rights employer' },
+    { id: 'smc-resources-support',    label: 'Resources & Support',                      icon: '💡', kw: 'resources support faq troubleshooting contact directory forum news updates' },
+  ];
+
+  function buildIndex() {
+    var items = [];
+
+    // Sections
+    sections.forEach(function (s) {
+      var el = document.getElementById(s.id);
+      if (!el) return;
+      items.push({ el: el, label: s.label, sub: 'Jump to Section', icon: s.icon, text: (s.kw + ' ' + s.label).toLowerCase(), type: 'section' });
+    });
+
+    // Cards
+    root.querySelectorAll('.smc-card[data-search]').forEach(function (el) {
+      var title = (el.querySelector('.smc-card-title') || {}).textContent || '';
+      var desc  = (el.querySelector('.smc-card-desc')  || {}).textContent || '';
+      var icon  = (el.querySelector('.smc-card-icon')  || {}).textContent || '📄';
+      var secEl = el.closest('.smc-section');
+      var secHdr = secEl ? (secEl.querySelector('.smc-section-header') || {}).textContent || '' : '';
+      items.push({ el: el, label: title.trim(), sub: secHdr.trim(), icon: icon.trim(), text: (el.dataset.search + ' ' + title + ' ' + desc).toLowerCase(), type: 'card' });
+    });
+
+    // Quick buttons
+    root.querySelectorAll('.smc-btn[data-search]').forEach(function (el) {
+      items.push({ el: el, label: el.textContent.trim(), sub: 'Quick Access', icon: '⚡', text: (el.dataset.search + ' ' + el.textContent).toLowerCase(), type: 'btn' });
+    });
+
+    // Questionnaire links
+    root.querySelectorAll('.smc-q-link[data-search]').forEach(function (el) {
+      items.push({ el: el, label: el.textContent.trim(), sub: 'Getting Started — Questionnaires', icon: '📝', text: (el.dataset.search + ' ' + el.textContent).toLowerCase(), type: 'qlink' });
+    });
+
+    return items;
+  }
+
+  var index       = buildIndex();
+  var activeIdx   = -1;
+  var curResults  = [];
+
+  function clearHL() {
+    root.querySelectorAll('.smc-highlight').forEach(function (el) { el.classList.remove('smc-highlight'); });
+  }
+
+  function render(results) {
+    curResults = results;
+    activeIdx  = -1;
+    if (!results.length) {
+      dropdown.innerHTML = '<div class="smc-no-results">No results found — try different keywords.</div>';
+    } else {
+      dropdown.innerHTML = results.map(function (r, i) {
+        return '<div class="smc-result-item" data-idx="' + i + '">' +
+          '<span class="smc-result-icon">' + (r.icon || '🔗') + '</span>' +
+          '<div class="smc-result-text"><strong>' + r.label + '</strong><span>' + r.sub + '</span></div>' +
+          '</div>';
+      }).join('');
+      dropdown.querySelectorAll('.smc-result-item').forEach(function (item) {
+        item.addEventListener('mousedown', function (e) {
+          e.preventDefault();
+          pick(parseInt(item.getAttribute('data-idx'), 10));
+        });
+      });
+    }
+    dropdown.classList.add('visible');
+  }
+
+  function hide() {
+    dropdown.classList.remove('visible');
+    clearHL();
+  }
+
+  function pick(idx) {
+    if (idx < 0 || idx >= curResults.length) return;
+    var r  = curResults[idx];
+    var el = r.el;
+    dropdown.classList.remove('visible');
+    input.value = '';
+    var target = (r.type === 'section') ? (el.querySelector('.smc-section-header') || el) : el;
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    clearHL();
+    if (r.type === 'section') {
+      el.querySelectorAll('.smc-card').forEach(function (c) { c.classList.add('smc-highlight'); });
+      setTimeout(function () { el.querySelectorAll('.smc-card').forEach(function (c) { c.classList.remove('smc-highlight'); }); }, 2500);
+    } else {
+      el.classList.add('smc-highlight');
+      setTimeout(function () { el.classList.remove('smc-highlight'); }, 3000);
+    }
+  }
+
+  input.addEventListener('input', function () {
+    var q = input.value.trim().toLowerCase();
+    if (!q) { hide(); return; }
+    var results = index.filter(function (item) { return item.text.indexOf(q) !== -1; }).slice(0, 9);
+    render(results);
+  });
+
+  input.addEventListener('keydown', function (e) {
+    if (!dropdown.classList.contains('visible')) return;
+    var items = dropdown.querySelectorAll('.smc-result-item');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      activeIdx = Math.min(activeIdx + 1, items.length - 1);
+      items.forEach(function (el, i) { el.classList.toggle('active', i === activeIdx); });
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      activeIdx = Math.max(activeIdx - 1, 0);
+      items.forEach(function (el, i) { el.classList.toggle('active', i === activeIdx); });
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      pick(activeIdx >= 0 ? activeIdx : 0);
+    } else if (e.key === 'Escape') {
+      hide();
+    }
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!input.contains(e.target) && !dropdown.contains(e.target)) hide();
+  });
+
+  input.addEventListener('focus', function () {
+    if (input.value.trim()) input.dispatchEvent(new Event('input'));
+  });
+
+}());
+</script>
